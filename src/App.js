@@ -1,23 +1,35 @@
-import logo from './logo.svg';
+import { useEffect, useMemo, useState } from 'react';
+import Button from 'react-bootstrap/Button';
+import List from './List';
+import axios from 'axios';
 import './App.css';
 
 function App() {
+
+  const [id, setId] = useState(0);
+  const [posts, setPosts] = useState([]);
+
+  const fetchDetails = async (e) => {
+    e.preventDefault();
+    const response = await axios.get(`https://jsonplaceholder.typicode.com/posts/${id}`);
+    setPosts(response.data);
+ 
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+
+      <form onSubmit={(e) => fetchDetails(e)} className='form'>
+        <label htmlFor='id' className='form-label'>ENTER ID</label>
+        <input type="number" name="id" value={id} onChange={(e) => setId(e.target.value)}  />
+        <button className='btn'>Fetch Data</button>
+      </form>
+
+     {
+      (id !== 0) &&
+      <List posts={posts} />
+     }
+
     </div>
   );
 }
